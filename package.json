@@ -1,0 +1,23 @@
+{
+  "name": "hfb-api",
+  "version": "1.0.0",
+  "description": "Simple API server for HFB Mobile",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DaySloth/HFB-API.git"
+  },
+  "author": "Allister Rampenthal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DaySloth/HFB-API/issues"
+  },
+  "homepage": "https://github.com/DaySloth/HFB-API#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.13.2"
+  }
+}
