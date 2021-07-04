@@ -4,6 +4,9 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const routes = require("./routes");
 
+// Loading environment variables
+require("dotenv").config();
+
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -19,6 +22,15 @@ app.use(routes);
 //     useUnifiedTopology: true,
 //   }
 // );
+
+// Setting up Cloudinary
+const cloudinary = require("cloudinary").v2;
+cloudinary.config({
+  cloud_name: "hfb-mobile",
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
+});
 
 // Starting the express server
 app.listen(PORT, function () {

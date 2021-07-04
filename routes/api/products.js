@@ -1,15 +1,20 @@
 const router = require("express").Router();
 const bcrypt = require("bcrypt");
+const { encode, decode } = require("../../util/encoder.js");
 
-function verifyAPIKey (givenKey) {
-
+async function verifyAPIKey(givenKey) {
+  return decode(givenKey);
 }
 
-router.route("/").get((req, res) => {
-  console.log(req.header("hfb-apikey"));
-  res.json({
-    Example: "Hello this is working",
-  });
+router.route("/").get(async (req, res) => {
+  const verified = await verifyAPIKey(req.header("hfb-apikey"));
+  if (verified) {
+    res.json({
+      test: "hey its working now",
+    });
+  } else {
+    res.sendStatus(403);
+  }
 });
 
 module.exports = router;
