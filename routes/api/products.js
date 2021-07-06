@@ -8,14 +8,10 @@ async function verifyAPIKey(givenKey) {
 }
 
 router.route("/").get(async (req, res) => {
-  let verified = await verifyAPIKey(req.header("hfb-apikey"));
-  if (verified) {
-    ProductsDb.find().then((foundProducts) => {
-      res.json(foundProducts);
-    });
-  } else {
-    res.sendStatus(403);
-  }
+  ProductsDb.find().then((foundProducts) => {
+    res.json(foundProducts);
+    res.end();
+  });
 });
 
 router.route("/create").post(async (req, res) => {
