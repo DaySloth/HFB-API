@@ -13,15 +13,15 @@ app.use(express.json());
 app.use(routes);
 
 // Connect to the Mongo DB
-// const mongoose = require("mongoose");
-// mongoose.connect(
-//   process.env.MONGODB_URI,
-//   {
-//     useNewUrlParser: true,
-//     useFindAndModify: false,
-//     useUnifiedTopology: true,
-//   }
-// );
+const mongoose = require("mongoose");
+mongoose.connect(
+  process.env.MONGODB_URI,
+  {
+    useNewUrlParser: true,
+    useFindAndModify: false,
+    useUnifiedTopology: true,
+  }
+);
 
 // Setting up Cloudinary
 // const cloudinary = require("cloudinary").v2;
