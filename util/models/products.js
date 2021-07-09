@@ -7,11 +7,11 @@ const productSchema = new mongoose.Schema({
   quantity: Number,
   category: { type: String, trim: true, lowercase: true },
   sub_category: { type: String, trim: true, lowercase: true },
-  color: { type: String, trim: true, lowercase: true },
+  finish: { type: String, trim: true, lowercase: true },
   length: Number,
   width: Number,
   height: Number,
-  images: { type: Array, default: undefined },
+  image: { type: String, trim: true },
   date_Updated: { type: Date, default: Date.now },
 });
 
