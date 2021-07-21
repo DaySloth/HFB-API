@@ -7,8 +7,10 @@ const storage = multer.memoryStorage();
 const multerUploads = multer({ storage }).single("image");
 const parser = new DatauriParser();
 
-const dataUri = async (req) =>
+const dataUri = async (req) => {
+  console.log("datauri here");
   parser.format(path.extname(req.file.originalname).toString(), req.file.buffer)
     .content;
+};
 
 module.exports = { multerUploads, dataUri };
