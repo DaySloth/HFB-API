@@ -20,6 +20,8 @@ router.route("/create").post(multerUploads, async (req, res) => {
   let verified = await verifyAPIKey(req.header("hfb-apikey"));
   if (verified) {
     if (req.file) {
+      console.log("here");
+      console.log(req.file);
       const file = dataUri(req);
       uploader.upload(file).then((result) => {
         req.body = JSON.parse(req.body.data);
