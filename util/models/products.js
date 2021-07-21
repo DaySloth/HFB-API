@@ -5,13 +5,14 @@ const productSchema = new mongoose.Schema({
   title: { type: String, trim: true },
   price: Number,
   quantity: Number,
-  category: { type: String, trim: true, lowercase: true },
-  sub_category: { type: String, trim: true, lowercase: true },
-  finish: { type: String, trim: true, lowercase: true },
+  category: { type: String, trim: true },
+  sub_category: { type: String, trim: true },
+  finish: { type: String, trim: true },
   length: Number,
   width: Number,
   height: Number,
   image: { type: String, trim: true },
+  image_id: { type: String, trim: true },
   date_Updated: { type: Date, default: Date.now },
 });
 
