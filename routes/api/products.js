@@ -1,7 +1,9 @@
 const router = require("express").Router();
 const bcrypt = require("bcrypt");
+const { uploader } = require("cloudinary").v2;
 const { encode, decode } = require("../../util/encoder.js");
 const ProductsDb = require("../../util/models/products.js");
+const { multerUploads, dataUri } = require("../../util/imageConverter.js");
 
 async function verifyAPIKey(givenKey) {
   return decode(givenKey);
@@ -14,12 +16,28 @@ router.route("/").get(async (req, res) => {
   });
 });
 
-router.route("/create").post(async (req, res) => {
+router.route("/create").post(multerUploads, async (req, res) => {
   let verified = await verifyAPIKey(req.header("hfb-apikey"));
   if (verified) {
-    ProductsDb.create(req.body).then((newProduct) => {
-      res.json(newProduct);
-    });
+    if (req.file) {
+      const file = dataUri(req);
+      uploader.upload(file).then((result) => {
+        req.body = JSON.parse(req.body.data);
+        req.body.image = result.url;
+        req.body.image_id = result.public_id;
+        ProductsDb.create(req.body).then((newProduct) => {
+          res.json(newProduct);
+        });
+      });
+    } else {
+      req.body = JSON.parse(req.body.data);
+      req.body.image =
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/450px-No_image_available.svg.png";
+      req.body.image_id = "nopublicid";
+      ProductsDb.create(req.body).then((newProduct) => {
+        res.json(newProduct);
+      });
+    }
   } else {
     res.sendStatus(403);
   }
