@@ -9,9 +9,8 @@ const parser = new DatauriParser();
 
 const dataUri = async (req) => {
   console.log("datauri here");
-  console.log(path.extname(req.file.originalname));
-  parser.format(path.extname(req.file.originalname).toString(), req.file.buffer)
-    .content;
+  let fileType = path.extname(req.file.originalname).toString();
+  parser.format(fileType, req.file.buffer).content;
 };
 
 module.exports = { multerUploads, dataUri };
