@@ -21,6 +21,7 @@ router.route("/create").post(multerUploads, async (req, res) => {
   if (verified) {
     if (req.file) {
       const file = await dataUri(req);
+      console.log(file);
       uploader.upload(file).then((result) => {
         req.body = JSON.parse(req.body.data);
         req.body.image = result.url;
