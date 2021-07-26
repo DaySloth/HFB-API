@@ -16,6 +16,13 @@ router.route("/").get(async (req, res) => {
   });
 });
 
+router.route("/:id").get(async (req, res) => {
+  ProductsDb.findOne({ _id: req.params.id }).then((foundProduct) => {
+    res.json(foundProduct);
+    res.end();
+  });
+});
+
 router.route("/create").post(multerUploads, async (req, res) => {
   let verified = await verifyAPIKey(req.header("hfb-apikey"));
   if (verified) {
