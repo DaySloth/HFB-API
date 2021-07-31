@@ -109,7 +109,6 @@ router.route("/reset-password/:id").get(async (req, res) => {
       { returnOriginal: false }
     ).then((result) => {
       //send email
-      console.log(result);
       sendEmail(
         result.email,
         "Reset Password Code",
