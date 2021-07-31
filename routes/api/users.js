@@ -33,10 +33,30 @@ router.route("/create").post(async (req, res) => {
       res.sendStatus(409);
     } else {
       try {
+        if (req.body.isTempPassword) {
+          const randomTempPassword = randomPassGen.randomPassword({
+            length: 5,
+            characters: [
+              randomPassGen.lower,
+              randomPassGen.upper,
+              randomPassGen.digits,
+            ],
+          });
+          req.body.password = randomTempPassword;
+        }
         bcrypt.hash(req.body.password, 10, (err, hashedPass) => {
           req.body.password = hashedPass;
 
           UsersDb.create(req.body).then((createdUser) => {
+            sendEmail(
+              req.body.email,
+              "Account created with temporary password",
+              `Your HFB Mobile account was created with a temporary password: ${randomTempPassword}`
+            );
+            sendSMS(
+              "HFB Mobile Support - Your account was created with a temporary password, please check your email",
+              req.body.phone_number
+            );
             res.sendStatus(200);
           });
         });
