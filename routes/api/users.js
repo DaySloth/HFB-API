@@ -33,8 +33,9 @@ router.route("/create").post(async (req, res) => {
       res.sendStatus(409);
     } else {
       try {
+        let randomTempPassword;
         if (req.body.isTempPassword) {
-          const randomTempPassword = randomPassGen.randomPassword({
+          randomTempPassword = randomPassGen.randomPassword({
             length: 5,
             characters: [
               randomPassGen.lower,
