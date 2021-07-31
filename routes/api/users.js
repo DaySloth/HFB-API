@@ -109,15 +109,19 @@ router.route("/reset-password/:id").get(async (req, res) => {
       { returnOriginal: false }
     ).then((result) => {
       //send email
-      sendEmail(
-        result.email,
-        "Reset Password Code",
-        `Your new password is: ${randomPassword}`
-      );
-      sendSMS(
-        `HFB Mobile Support - Your password has been reset, please check your email`,
-        result.phone_number
-      );
+      if (result.email) {
+        sendEmail(
+          result.email,
+          "Reset Password Code",
+          `Your new password is: ${randomPassword}`
+        );
+      }
+      if (result.phone_number) {
+        sendSMS(
+          `HFB Mobile Support - Your password has been reset, please check your email`,
+          result.phone_number
+        );
+      }
       res.sendStatus(200);
     });
   } else {
