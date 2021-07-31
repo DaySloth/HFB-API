@@ -1,12 +1,12 @@
+// Loading environment variables
+require("dotenv").config();
+
 // Server variables
 const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 3001;
 const cors = require("cors");
 const routes = require("./routes");
-
-// Loading environment variables
-require("dotenv").config();
 
 // Middleware
 app.use(cors());
