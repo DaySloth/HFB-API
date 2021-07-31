@@ -28,16 +28,21 @@ router.route("/create").post(async (req, res) => {
   let verified = await verifyAPIKey(req.header("hfb-apikey"));
   if (verified) {
     //create user
-    try {
-      bcrypt.hash(req.body.password, 10, (err, hashedPass) => {
-        req.body.password = hashedPass;
+    let duplicateUser = await UsersDb.find({ email: req.body.email });
+    if (duplicateUser[0]) {
+      res.sendStatus(409);
+    } else {
+      try {
+        bcrypt.hash(req.body.password, 10, (err, hashedPass) => {
+          req.body.password = hashedPass;
 
-        UsersDb.create(req.body).then((createdUser) => {
-          res.sendStatus(200);
+          UsersDb.create(req.body).then((createdUser) => {
+            res.sendStatus(200);
+          });
         });
-      });
-    } catch (error) {
-      res.sendStatus(403);
+      } catch (error) {
+        res.sendStatus(403);
+      }
     }
   } else {
     res.sendStatus(403);
