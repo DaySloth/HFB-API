@@ -52,7 +52,7 @@ router.route("/create").post(async (req, res) => {
             sendEmail(
               req.body.email,
               "Account created with temporary password",
-              `Your HFB Mobile account was created with a temporary password: ${randomTempPassword}`
+              randomTempPassword
             );
             sendSMS(
               "HFB Mobile Support - Your account was created with a temporary password, please check your email",
