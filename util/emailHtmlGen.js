@@ -131,7 +131,7 @@ module.exports = {
                       "
                     >
                       <img
-                        src="../assets/Kohler-hfb-divider.png"
+                        src="https://res.cloudinary.com/hfb-mobile/image/upload/v1627775926/Kohler-hfb-divider_ynvtr2.png"
                         height="100px"
                         width="300px"
                       />
