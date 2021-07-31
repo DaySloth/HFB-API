@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/DaySloth/HFB-API#readme",
   "dependencies": {
+    "@sendgrid/mail": "^7.4.5",
     "base-64": "^1.0.0",
     "bcrypt": "^5.0.1",
     "cloudinary": "^1.26.2",
@@ -33,6 +34,7 @@
     "mysql": "^2.18.1",
     "path": "^0.12.7",
     "secure-random-password": "^0.2.3",
+    "twilio": "^3.66.1",
     "utf8": "^3.0.0"
   },
   "devDependencies": {
