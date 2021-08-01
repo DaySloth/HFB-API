@@ -161,7 +161,7 @@ module.exports = {
                           letter-spacing: 0px;
                         "
                       >
-                        Password was reset
+                        Temporary password has been added
                       </h1>
                     </td>
                   </tr>
