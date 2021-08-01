@@ -86,10 +86,15 @@ router.route("/update/:id").post(async (req, res) => {
   }
 });
 
-router.route("/delete/:id").get(async (req, res) => {
+router.route("/delete/:id").delete(async (req, res) => {
   let verified = await verifyAPIKey(req.header("hfb-apikey"));
   if (verified) {
     //delete user
+    UsersDb.findByIdAndDelete(req.params.id).then((response) => {
+      if (response) {
+        res.sendStatus(200);
+      } else res.sendStatus(403);
+    });
   } else {
     res.sendStatus(403);
   }
