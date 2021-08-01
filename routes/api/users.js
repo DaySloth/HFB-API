@@ -22,6 +22,13 @@ router.route("/").get(async (req, res) => {
 
 router.route("/:id").get(async (req, res) => {
   //get user by id
+  try {
+    let dbUser = await UsersDb.findById(req.params.id);
+    res.send(dbUser);
+    res.end();
+  } catch (error) {
+    res.sendStatus(403);
+  }
 });
 
 router.route("/create").post(async (req, res) => {
