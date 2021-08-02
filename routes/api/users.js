@@ -131,6 +131,33 @@ router.route("/login").post(async (req, res) => {
   }
 });
 
+router.route("/login/temp-password").post(async (req, res) => {
+  let verified = await verifyAPIKey(req.header("hfb-apikey"));
+  if (verified) {
+    //change password and login user
+    bcrypt.hash(req.body.password, 10, (err, hashedPass) => {
+      UsersDb.findOneAndUpdate(
+        { email: req.body.email },
+        {
+          isTempPassword: false,
+          password: hashedPass,
+          date_updated: Date.now(),
+        },
+        { returnOriginal: false }
+      ).then((updatedUser) => {
+        res.send({
+          first_name: updatedUser.first_name,
+          last_name: updatedUser.last_name,
+          email: updatedUser.email,
+          isTempPassword: updatedUser.isTempPassword,
+          hasWebAccess: updatedUser.hasWebAccess,
+        });
+        res.end();
+      });
+    });
+  }
+});
+
 router.route("/reset-password/:id").get(async (req, res) => {
   let verified = await verifyAPIKey(req.header("hfb-apikey"));
   if (verified) {
