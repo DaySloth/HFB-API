@@ -104,7 +104,7 @@ router.route("/login").post(async (req, res) => {
   let verified = await verifyAPIKey(req.header("hfb-apikey"));
   if (verified) {
     //check for temporary password
-    console.log(req.body);
+
     if (req.body.resetTempPassword) {
       //find and update then login
       bcrypt.hash(req.body.password, 10, async (err, hashedPass) => {
@@ -126,6 +126,7 @@ router.route("/login").post(async (req, res) => {
     } else {
       //login user
       const foundUser = await UsersDb.findOne({ email: req.body.email });
+      console.log(foundUser);
       if (foundUser) {
         bcrypt.compare(req.body.password, foundUser.password, (err, result) => {
           if (err) {
