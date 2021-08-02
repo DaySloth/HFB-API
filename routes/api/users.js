@@ -178,7 +178,7 @@ router.route("/reset-password/:id").get(async (req, res) => {
     const { plainText, secure } = await genSecureRandomPassword();
     UsersDb.findOneAndUpdate(
       { _id: req.params.id },
-      { password: secure, isTempPassword: true },
+      { password: secure, isTempPassword: true, date_updated: Date.now() },
       { returnOriginal: false }
     ).then((result) => {
       //send email
@@ -208,8 +208,8 @@ router.route("/reset-password/email").post(async (req, res) => {
     //reset user password
     const { plainText, secure } = await genSecureRandomPassword();
     UsersDb.findOneAndUpdate(
-      { _id: req.body.email },
-      { password: secure, isTempPassword: true },
+      { email: req.body.email },
+      { password: secure, isTempPassword: true, date_updated: Date.now() },
       { returnOriginal: false }
     ).then((result) => {
       //send email
