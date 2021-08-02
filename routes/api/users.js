@@ -104,6 +104,7 @@ router.route("/login").post(async (req, res) => {
   let verified = await verifyAPIKey(req.header("hfb-apikey"));
   if (verified) {
     //check for temporary password
+    console.log(req.body);
     if (req.body.isTempPassword) {
       //find and update then login
       bcrypt.hash(req.body.password, 10, async (err, hashedPass) => {
