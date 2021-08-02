@@ -202,4 +202,35 @@ router.route("/reset-password/:id").get(async (req, res) => {
   }
 });
 
+router.route("/reset-password/email").post(async (req, res) => {
+  let verified = await verifyAPIKey(req.header("hfb-apikey"));
+  if (verified) {
+    //reset user password
+    const { plainText, secure } = await genSecureRandomPassword();
+    UsersDb.findOneAndUpdate(
+      { _id: req.body.email },
+      { password: secure, isTempPassword: true },
+      { returnOriginal: false }
+    ).then((result) => {
+      //send email
+      if (result.email) {
+        sendEmail(
+          result.email,
+          "Reset Password Code",
+          `Your new password is: ${plainText}`
+        );
+      }
+      if (result.phone_number) {
+        // sendSMS(
+        //   `HFB Mobile Support - Your password has been reset, please check your email`,
+        //   result.phone_number
+        // );
+      }
+      res.sendStatus(200);
+    });
+  } else {
+    res.sendStatus(403);
+  }
+});
+
 module.exports = router;
