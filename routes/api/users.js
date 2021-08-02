@@ -105,22 +105,23 @@ router.route("/login").post(async (req, res) => {
   if (verified) {
     //check for temporary password
     console.log(req.body);
-    if (req.body.isTempPassword) {
+    if (req.body.resetTempPassword) {
       //find and update then login
       bcrypt.hash(req.body.password, 10, async (err, hashedPass) => {
-        const updatedUser = await UsersDb.findOneAndUpdate(
+        UsersDb.findOneAndUpdate(
           { email: req.body.email },
           { isTempPassword: false, password: hashedPass },
           { returnOriginal: false }
-        );
-        res.send({
-          first_name: updatedUser.first_name,
-          last_name: updatedUser.last_name,
-          email: updatedUser.email,
-          isTempPassword: updatedUser.isTempPassword,
-          hasWebAccess: updatedUser.hasWebAccess,
+        ).then((updatedUser) => {
+          res.send({
+            first_name: updatedUser.first_name,
+            last_name: updatedUser.last_name,
+            email: updatedUser.email,
+            isTempPassword: updatedUser.isTempPassword,
+            hasWebAccess: updatedUser.hasWebAccess,
+          });
+          res.end();
         });
-        res.end();
       });
     } else {
       //login user
