@@ -103,27 +103,47 @@ router.route("/delete/:id").delete(async (req, res) => {
 router.route("/login").post(async (req, res) => {
   let verified = await verifyAPIKey(req.header("hfb-apikey"));
   if (verified) {
-    //login user
-    const foundUser = await UsersDb.findOne({ email: req.body.email });
-    if (foundUser) {
-      bcrypt.compare(req.body.password, foundUser.password, (err, result) => {
-        if (err) {
-          res.sendStatus(404);
-        } else if (result) {
-          res.send({
-            first_name: foundUser.first_name,
-            last_name: foundUser.last_name,
-            email: foundUser.email,
-            isTempPassword: foundUser.isTempPassword,
-            hasWebAccess: foundUser.hasWebAccess,
-          });
-          res.end();
-        } else {
-          res.sendStatus(404);
-        }
+    //check for temporary password
+    if (req.body.isTempPassword) {
+      //find and update then login
+      bcrypt.hash(req.body.password, 10, (err, hashedPass) => {
+        const updatedUser = await UsersDb.findOneAndUpdate(
+          { email: req.body.email },
+          { isTempPassword: false, password: hashedPass },
+          { returnOriginal: false }
+        );
+        res.send({
+          first_name: updatedUser.first_name,
+          last_name: updatedUser.last_name,
+          email: updatedUser.email,
+          isTempPassword: updatedUser.isTempPassword,
+          hasWebAccess: updatedUser.hasWebAccess,
+        });
+        res.end();
       });
     } else {
-      res.sendStatus(404);
+      //login user
+      const foundUser = await UsersDb.findOne({ email: req.body.email });
+      if (foundUser) {
+        bcrypt.compare(req.body.password, foundUser.password, (err, result) => {
+          if (err) {
+            res.sendStatus(404);
+          } else if (result) {
+            res.send({
+              first_name: foundUser.first_name,
+              last_name: foundUser.last_name,
+              email: foundUser.email,
+              isTempPassword: foundUser.isTempPassword,
+              hasWebAccess: foundUser.hasWebAccess,
+            });
+            res.end();
+          } else {
+            res.sendStatus(404);
+          }
+        });
+      } else {
+        res.sendStatus(404);
+      }
     }
   } else {
     res.sendStatus(403);
