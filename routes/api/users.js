@@ -69,10 +69,10 @@ router.route("/create").post(async (req, res) => {
             "Account created with temporary password",
             randomTempPassword
           );
-          // sendSMS(
-          //   "HFB Mobile Support - Your account was created with a temporary password, please check your email",
-          //   req.body.phone_number
-          // );
+          sendSMS(
+            "HFB Mobile Support - Your account was created with a temporary password, please check your email",
+            req.body.phone_number
+          );
           res.sendStatus(200);
         });
       } catch (error) {
@@ -190,10 +190,10 @@ router.route("/reset-password/:id").get(async (req, res) => {
         );
       }
       if (result.phone_number) {
-        // sendSMS(
-        //   `HFB Mobile Support - Your password has been reset, please check your email`,
-        //   result.phone_number
-        // );
+        sendSMS(
+          `HFB Mobile Support - Your password has been reset, please check your email`,
+          result.phone_number
+        );
       }
       res.sendStatus(200);
     });
@@ -221,10 +221,10 @@ router.route("/reset-password/email").post(async (req, res) => {
         );
       }
       if (result.phone_number) {
-        // sendSMS(
-        //   `HFB Mobile Support - Your password has been reset, please check your email`,
-        //   result.phone_number
-        // );
+        sendSMS(
+          `HFB Mobile Support - Your password has been reset, please check your email`,
+          result.phone_number
+        );
       }
       res.sendStatus(200);
     });
