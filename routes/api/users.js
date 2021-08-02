@@ -115,6 +115,7 @@ router.route("/login").post(async (req, res) => {
             last_name: foundUser.last_name,
             email: foundUser.email,
             isTempPassword: foundUser.isTempPassword,
+            hasWebAccess: foundUser.hasWebAccess,
           });
           res.end();
         } else {
