@@ -9,6 +9,22 @@ async function verifyAPIKey(givenKey) {
   return decode(givenKey);
 }
 
+function genSecureRandomPassword() {
+  return new Promise((resolve, reject) => {
+    let randomPassword = randomPassGen.randomPassword({
+      length: 5,
+      characters: [
+        randomPassGen.lower,
+        randomPassGen.upper,
+        randomPassGen.digits,
+      ],
+    });
+    bcrypt.hash(randomPassword, 10, (err, hashedPass) => {
+      resolve(hashedPass);
+    });
+  });
+}
+
 router.route("/").get(async (req, res) => {
   //get all users
   try {
@@ -42,31 +58,21 @@ router.route("/create").post(async (req, res) => {
       try {
         let randomTempPassword;
         if (req.body.isTempPassword) {
-          randomTempPassword = randomPassGen.randomPassword({
-            length: 5,
-            characters: [
-              randomPassGen.lower,
-              randomPassGen.upper,
-              randomPassGen.digits,
-            ],
-          });
+          randomTempPassword = await genSecureRandomPassword();
           req.body.password = randomTempPassword;
         }
-        bcrypt.hash(req.body.password, 10, (err, hashedPass) => {
-          req.body.password = hashedPass;
 
-          UsersDb.create(req.body).then((createdUser) => {
-            sendEmail(
-              req.body.email,
-              "Account created with temporary password",
-              randomTempPassword
-            );
-            sendSMS(
-              "HFB Mobile Support - Your account was created with a temporary password, please check your email",
-              req.body.phone_number
-            );
-            res.sendStatus(200);
-          });
+        UsersDb.create(req.body).then((createdUser) => {
+          sendEmail(
+            req.body.email,
+            "Account created with temporary password",
+            randomTempPassword
+          );
+          sendSMS(
+            "HFB Mobile Support - Your account was created with a temporary password, please check your email",
+            req.body.phone_number
+          );
+          res.sendStatus(200);
         });
       } catch (error) {
         res.sendStatus(403);
@@ -81,6 +87,12 @@ router.route("/update/:id").post(async (req, res) => {
   let verified = await verifyAPIKey(req.header("hfb-apikey"));
   if (verified) {
     //update user
+    req.body.date_updated = Date.now();
+    UsersDb.findByIdAndUpdate(req.params.id, req.body, {
+      returnOriginal: false,
+    }).then((updatedUser) => {
+      res.sendStatus(200);
+    });
   } else {
     res.sendStatus(403);
   }
@@ -162,14 +174,7 @@ router.route("/reset-password/:id").get(async (req, res) => {
   let verified = await verifyAPIKey(req.header("hfb-apikey"));
   if (verified) {
     //reset user password
-    const randomPassword = randomPassGen.randomPassword({
-      length: 5,
-      characters: [
-        randomPassGen.lower,
-        randomPassGen.upper,
-        randomPassGen.digits,
-      ],
-    });
+    const randomPassword = await genSecureRandomPassword();
     UsersDb.findOneAndUpdate(
       { _id: req.params.id },
       { password: randomPassword, isTempPassword: true },
