@@ -3,7 +3,11 @@ const bcrypt = require("bcrypt");
 const { encode, decode } = require("../../util/encoder.js");
 const UsersDb = require("../../util/models/users.js");
 const randomPassGen = require("secure-random-password");
-const { sendEmail, sendSMS } = require("../../util/sender.js");
+const {
+  sendTempPasswordEmail,
+  sendCreatedEmail,
+  sendSMS,
+} = require("../../util/sender.js");
 
 async function verifyAPIKey(givenKey) {
   return decode(givenKey);
@@ -64,15 +68,23 @@ router.route("/create").post(async (req, res) => {
         }
 
         UsersDb.create(req.body).then((createdUser) => {
-          sendEmail(
-            req.body.email,
-            "Account created with temporary password",
-            randomTempPassword
-          );
-          sendSMS(
-            "HFB Mobile Support - Your account was created with a temporary password, please check your email",
-            req.body.phone_number
-          );
+          if (req.body.isTempPassword) {
+            sendTempPasswordEmail(
+              req.body.email,
+              "Account created with temporary password",
+              randomTempPassword
+            );
+            sendSMS(
+              "HFB Mobile Support - Your account was created with a temporary password, please check your email",
+              req.body.phone_number
+            );
+          } else {
+            sendCreatedEmail(req.body.email, "Account successfully created");
+            sendSMS(
+              "HFB Mobile Support - Your account was successfully created with the provided password",
+              req.body.phone_number
+            );
+          }
           res.sendStatus(200);
         });
       } catch (error) {
