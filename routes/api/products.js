@@ -50,6 +50,26 @@ router.route("/create").post(multerUploads, async (req, res) => {
   }
 });
 
+router.route("/upload-image").post(multerUploads, async (req, res) => {
+  let verified = await verifyAPIKey(req.header("hfb-apikey"));
+  if (verified) {
+    if (req.file) {
+      const file = await dataUri(req);
+      uploader.upload(file).then((result) => {
+        res.json({
+          url: result.url,
+          image_id: result.public_id,
+        });
+        res.end();
+      });
+    } else {
+      res.sendStatus(403);
+    }
+  } else {
+    res.sendStatus(403);
+  }
+});
+
 router.route("/update/:id").post(async (req, res) => {
   let verified = await verifyAPIKey(req.header("hfb-apikey"));
   if (verified) {
