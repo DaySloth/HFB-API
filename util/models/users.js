@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
   isTempPassword: Boolean,
   hasWebAccess: Boolean,
   password: { type: String, trim: true },
-  date_Updated: { type: Date, default: Date.now },
+  date_updated: { type: Date, default: Date.now },
 });
 
 const User = mongoose.model("User", userSchema);
