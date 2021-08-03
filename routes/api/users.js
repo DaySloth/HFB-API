@@ -88,7 +88,7 @@ router.route("/update/:id").post(async (req, res) => {
   let verified = await verifyAPIKey(req.header("hfb-apikey"));
   if (verified) {
     //update user
-    req.body.date_updated = Date.now();
+    req.body.date_updated = new Date();
     UsersDb.findByIdAndUpdate(req.params.id, req.body, {
       returnOriginal: false,
     }).then((updatedUser) => {
@@ -154,7 +154,7 @@ router.route("/login/temp-password").post(async (req, res) => {
         {
           isTempPassword: false,
           password: hashedPass,
-          date_updated: Date.now(),
+          date_updated: new Date(),
         },
         { returnOriginal: false }
       ).then((updatedUser) => {
@@ -178,7 +178,7 @@ router.route("/reset-password/:id").get(async (req, res) => {
     const { plainText, secure } = await genSecureRandomPassword();
     UsersDb.findOneAndUpdate(
       { _id: req.params.id },
-      { password: secure, isTempPassword: true, date_updated: Date.now() },
+      { password: secure, isTempPassword: true, date_updated: new Date() },
       { returnOriginal: false }
     ).then((result) => {
       //send email
@@ -209,7 +209,7 @@ router.route("/reset-password/email").post(async (req, res) => {
     const { plainText, secure } = await genSecureRandomPassword();
     UsersDb.findOneAndUpdate(
       { email: req.body.email },
-      { password: secure, isTempPassword: true, date_updated: Date.now() },
+      { password: secure, isTempPassword: true, date_updated: new Date() },
       { returnOriginal: false }
     ).then((result) => {
       //send email
