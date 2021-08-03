@@ -11,12 +11,6 @@ const userSchema = new mongoose.Schema({
   date_updated: { type: Date, default: Date.now },
 });
 
-userSchema.pre("save", function (next) {
-  now = new Date();
-  this.date_updated = now;
-  next();
-});
-
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;
