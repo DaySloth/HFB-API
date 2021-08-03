@@ -195,7 +195,7 @@ router.route("/reset-password/:id").get(async (req, res) => {
         sendTempPasswordEmail(
           result.email,
           "Your new password for HFB-Mobile",
-          `Your new password is: ${plainText}`
+          plainText
         );
       }
       if (result.phone_number) {
