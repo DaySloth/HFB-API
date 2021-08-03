@@ -5,10 +5,29 @@ const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require("twilio")(accountSid, authToken);
 
-const { resetPasswordHTML } = require("./emailHtmlGen.js");
+const { resetPasswordHTML, accountCreatedHTML } = require("./emailHtmlGen.js");
 
 module.exports = {
-  sendEmail: async (email, subject, message) => {
+  sendCreatedEmail: async (email, subject) => {
+    const msg = {
+      to: `${email}`, // Change to your recipient
+      from: {
+        email: "support@hfbmobile.com",
+        name: "HFB Mobile Support",
+      }, // Change to your verified sender
+      subject: `${subject}`,
+      html: await accountCreatedHTML(),
+    };
+    sgMail
+      .send(msg)
+      .then(() => {
+        console.log("Email sent");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  },
+  sendTempPasswordEmail: async (email, subject, message) => {
     const msg = {
       to: `${email}`, // Change to your recipient
       from: {
