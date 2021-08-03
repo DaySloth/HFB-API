@@ -73,7 +73,7 @@ router.route("/upload-image").post(multerUploads, async (req, res) => {
 router.route("/update/:id").post(async (req, res) => {
   let verified = await verifyAPIKey(req.header("hfb-apikey"));
   if (verified) {
-    req.body.date_updated = Date.now;
+    req.body.date_updated = Date.now();
     console.log(typeof req.body.date_updated);
     ProductsDb.findOneAndUpdate({ _id: req.params.id }, req.body, {
       returnOriginal: false,
