@@ -88,7 +88,6 @@ router.route("/update/:id").post(async (req, res) => {
   let verified = await verifyAPIKey(req.header("hfb-apikey"));
   if (verified) {
     //update user
-    req.body.date_updated = new Date();
     UsersDb.findByIdAndUpdate(req.params.id, req.body, {
       returnOriginal: false,
     }).then((updatedUser) => {
@@ -118,7 +117,6 @@ router.route("/login").post(async (req, res) => {
   if (verified) {
     //login user
     const foundUser = await UsersDb.findOne({ email: req.body.email });
-    console.log(foundUser);
     if (foundUser) {
       bcrypt.compare(req.body.password, foundUser.password, (err, result) => {
         if (err) {
@@ -154,7 +152,6 @@ router.route("/login/temp-password").post(async (req, res) => {
         {
           isTempPassword: false,
           password: hashedPass,
-          date_updated: new Date(),
         },
         { returnOriginal: false }
       ).then((updatedUser) => {
@@ -178,7 +175,7 @@ router.route("/reset-password/:id").get(async (req, res) => {
     const { plainText, secure } = await genSecureRandomPassword();
     UsersDb.findOneAndUpdate(
       { _id: req.params.id },
-      { password: secure, isTempPassword: true, date_updated: new Date() },
+      { password: secure, isTempPassword: true },
       { returnOriginal: false }
     ).then((result) => {
       //send email
@@ -209,7 +206,7 @@ router.route("/reset-password/email").post(async (req, res) => {
     const { plainText, secure } = await genSecureRandomPassword();
     UsersDb.findOneAndUpdate(
       { email: req.body.email },
-      { password: secure, isTempPassword: true, date_updated: new Date() },
+      { password: secure, isTempPassword: true },
       { returnOriginal: false }
     ).then((result) => {
       //send email
